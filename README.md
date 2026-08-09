@@ -74,9 +74,11 @@ and create a new `ModuleScript`.
 Your library must contain a function named `Import` with two parameters:
 
 ```lua
-function Import(env, special)
+local module = {}
+function module.Import(env, special)
     -- Library registration
 end
+return module
 ```
 
 The parameters are:

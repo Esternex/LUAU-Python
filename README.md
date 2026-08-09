@@ -8,11 +8,31 @@ This project brings Python-inspired syntax and runtime behavior to Roblox/Luau, 
 
 ## Usage
 
-After importing the `src` folder into your Roblox game, move it into `ReplicatedStorage`.
+### Installation
+
+Download the latest `.rbxm` release from the [Latest Release](https://github.com/Esternex/LUAU-Python/releases/tag/release).
+
+Import the `.rbxm` file into your Roblox game. The imported folder contains the interpreter source.
+
+Move the imported folder into `ReplicatedStorage`.
 
 I recommend naming the folder `Python`, but you can use any name you want.
 
-Once imported, create a `LocalScript` or `Script` and require the main module:
+Your project should look something like:
+
+```text
+ReplicatedStorage
+└── Python
+    ├── main
+    ├── Lexer
+    ├── Parser
+    ├── Interpreter
+    └── ...
+```
+
+### Running Python-like Code
+
+Create a `LocalScript` or `Script` and require the `main` module:
 
 ```lua
 local main = require(game.ReplicatedStorage.Python.main)
@@ -41,37 +61,7 @@ end
 
 `main.run()` executes the provided Python-like source code inside the interpreter.
 
-Using `pcall()` is recommended if you want to safely handle errors produced while executing the interpreted code.
-
-## Changelog
-
-### 0.1.2
-
-* Added tuples for modifying color, size and position of parts instead of Vector3 and such.
-* Added roblox.createinstance()
-
-### 0.1.1
-
-* Added interpreter tests.
-* Added example/demo scripts.
-
-### 0.1.0
-
-* Initial public release.
-* Added the core Python-like lexer and parser.
-* Added variables, expressions, and basic types.
-* Added functions and classes.
-* Added `if` / `elif` / `else`.
-* Added `while` and `for` loops.
-* Added `break` and `continue`.
-* Added `try` / `except` / `else` / `finally`.
-* Added exception propagation and inheritance.
-* Added lists and dictionaries.
-* Added built-in functions.
-* Added `random`, `math`, and `time` libraries.
-* Added the `roblox` library.
-* Added support for custom libraries.
-* Added initial Roblox integration.
+Using `pcall()` is recommended if you want to safely handle errors produced while executing interpreted code.
 
 ## Features
 
@@ -95,9 +85,22 @@ Using `pcall()` is recommended if you want to safely handle errors produced whil
 * Custom libraries
 * Roblox integration
 
+## Built-in Libraries
+
+The interpreter currently includes four built-in libraries:
+
+* `roblox`
+* `random`
+* `math`
+* `time`
+
+The `random`, `math`, and `time` libraries are designed to provide functionality similar to their Python counterparts. Some features are currently unavailable or have been omitted.
+
+Detailed documentation for each library can be found in the [`Documentation/Libraries`](Documentation/Libraries/) directory.
+
 ## Roblox Integration
 
-This project includes a built-in `roblox` library specifically designed to interact directly with Roblox objects.
+The built-in `roblox` library allows Python-like scripts to directly interact with Roblox objects.
 
 For example:
 
@@ -114,162 +117,23 @@ part.Anchored = true
 
 This allows Python-like scripts to interact with Roblox instances without requiring the equivalent functionality to be written directly in Luau.
 
-The Roblox library is an important part of the project and will continue to expand as more functionality is implemented.
+> **Note:** This example requires a `Part` named `Part` to exist inside `Workspace`.
 
-> **Note:** The example above requires a `Part` named `Part` to exist inside `Workspace`.
+For complete documentation of the Roblox library, see [`Documentation/Libraries/Roblox.md`](Documentation/Libraries/Roblox.md).
 
-## Libraries
+## Custom Libraries
 
-The interpreter currently includes four built-in libraries:
+The interpreter supports custom libraries written in Luau.
 
-* `roblox`
-* `random`
-* `math`
-* `time`
+Custom libraries can expose functionality to Python-like code while still having access to the full Roblox/Luau environment.
 
-The `random`, `math`, and `time` libraries are designed to provide functionality similar to their Python counterparts. Some features are currently unavailable or have been omitted.
-
-### Creating a Custom Library
-
-Creating a custom library is relatively simple.
-
-Navigate to:
-
-```text
-src/Libraries
-```
-
-and create a new `ModuleScript`.
-
-Your library must contain a function named `Import` with two parameters:
-
-```lua
-local module = {}
-
-function module.Import(env, special)
-    -- Library registration
-end
-
-return module
-```
-
-The parameters are:
-
-* `env` — The environment used to create functions and expose functionality to the Python-like runtime.
-* `special` — The alias provided by the user when importing the library. This determines how the library is referenced from Python-like code.
-
-The library must also require the main interpreter module so that it can register itself.
-
-A library is registered using:
-
-```lua
-main.registerLibrary(env, special, {
-    -- Library functions
-})
-```
-
-The `env` and `special` values passed to `registerLibrary` are the same values received by the `Import` function.
-
-### Library Functions
-
-Library functions are written entirely in Luau.
-
-This means custom libraries have access to the full Roblox/Luau environment rather than being restricted to the sandboxed environment used by interpreted Python-like code.
-
-For example, a library named `special` could register a `ChangeColor` function:
-
-```lua
-main.registerLibrary(env, special, {
-    ChangeColor = function(args)
-        --[[
-            Args format:
-
-            args[1] = The first argument
-            args[2] = The second argument
-            args[3] = The third argument
-            args[4] = The fourth argument
-
-            Additional arguments continue as:
-            args[5], args[6], args[7], etc.
-
-            Expected arguments:
-
-            args[1] = Roblox object path
-            args[2] = Red value   (0-255)
-            args[3] = Green value (0-255)
-            args[4] = Blue value  (0-255)
-
-            Arguments retain their normal Python-like values.
-
-            For example:
-
-            "workspace.Part" -> string
-            255               -> number
-            true              -> boolean
-
-            Types can be inspected from Python-like code
-            using the built-in type() function.
-        ]]
-
-        local path = args[1]
-        local red = args[2]
-        local green = args[3]
-        local blue = args[4]
-
-        local object = game
-
-        -- Resolve the Roblox object path.
-        for name in string.gmatch(path, "[^%.]+") do
-            object = object:FindFirstChild(name)
-
-            if not object then
-                error("Could not find Roblox object: " .. path)
-            end
-        end
-
-        -- Make sure the object is a BasePart.
-        if not object:IsA("BasePart") then
-            error("Object must be a BasePart")
-        end
-
-        -- Convert 0-255 RGB values to Roblox's Color3 format.
-        object.Color = Color3.fromRGB(red, green, blue)
-    end,
-})
-```
-
-The `args` table contains the arguments passed to the function from the Python-like script.
-
-Arguments are stored by position, starting at `args[1]`.
-
-For example, the following Python-like code:
-
-```python
-import special
-
-special.ChangeColor("workspace.Part", 0, 255, 0)
-```
-
-provides these arguments to the Luau function:
-
-```text
-args[1] = "workspace.Part"
-args[2] = 0
-args[3] = 255
-args[4] = 0
-```
-
-The example above changes `workspace.Part` to green.
-
-Custom library functions can accept any values supported by the interpreter.
+For detailed information about creating custom libraries, see [`Documentation/Custom-Libraries.md`](Documentation/Custom-Libraries.md).
 
 > **Security note:** Custom libraries execute as Luau code and therefore have access to Roblox functionality outside the interpreted Python-like sandbox. Only install or use libraries that you trust.
 
 ## Exception Handling
 
 The interpreter supports Python-style exception handling, including `try`, `except`, `else`, and `finally`.
-
-For example:
 
 ```python
 try:
@@ -280,15 +144,13 @@ finally:
     print("Finished")
 ```
 
-The interpreter also supports exception propagation, re-raising, and exception inheritance.
-
-For example:
+It also supports exception propagation, re-raising, and exception inheritance.
 
 ```python
 try:
     raise ValueError("Something went wrong")
 except ValueError as error:
-    print(error)
+    print(str(error))
 ```
 
 ## Example
@@ -310,9 +172,17 @@ except ValueError as error:
     print(str(error))
 ```
 
+## Demo Scripts
+
+The [`Demo Scripts`](Demo%20Scripts/) folder contains example Python-like programs demonstrating different features of the interpreter.
+
+These examples are intended to help users understand the syntax and capabilities of the interpreter.
+
+Some demos may require Roblox objects to be present in the game. Any such requirements are documented inside the individual scripts.
+
 ## Project Structure
 
-The project structure may change as development continues, but the interpreter is organized around components such as:
+The project structure may change as development continues.
 
 ```text
 src/
@@ -328,11 +198,13 @@ Demo Scripts/
 
 tests/
 └── ...
+
+Documentation/
+├── Libraries/
+└── Custom-Libraries.md
 ```
 
-The main components are responsible for different stages of the interpreter, including parsing source code, executing it, managing runtime behavior, handling exceptions, and providing libraries.
-
-The `Demo Scripts` folder contains example Python-like programs demonstrating different features of the interpreter.
+The main components are responsible for different stages of the interpreter, including parsing source code, executing code, managing runtime behavior, handling exceptions, and providing libraries.
 
 ## Compatibility
 
@@ -375,6 +247,10 @@ If you find a bug:
 Pull requests are also welcome.
 
 If you want to contribute a new Python feature, please try to match the behavior of standard Python as closely as practical.
+
+## Changelog
+
+See [`CHANGELOG.md`](CHANGELOG.md) for the complete version history.
 
 ## License
 

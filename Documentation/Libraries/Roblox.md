@@ -36,26 +36,20 @@ The Roblox library automatically exposes two Roblox objects to the Python-like e
 print(game)
 ```
 
-This can also be used when accessing Roblox objects.
-
-For example:
-
-```python
-part = game.Workspace.Part
-```
+This cannot be used to directly access roblox-like objects though.
 
 ### `workspace`
 
 `workspace` refers to the current Roblox `Workspace`.
 
 ```python
-part = workspace.Part
+part = rb.getdir("workspace.Part")
 ```
 
 This is equivalent to accessing the Workspace through `game`:
 
 ```python
-part = game.Workspace.Part
+part = rb.getdir("game.Workspace.Part")
 ```
 
 Both `game` and `workspace` are automatically available and do not need to be imported separately.

@@ -6,6 +6,68 @@ This project brings Python-inspired syntax and runtime behavior to Roblox/Luau, 
 
 > **Note:** This project is still under active development and is not currently a 1:1 implementation of Python.
 
+## Usage
+
+After importing the `src` folder into your Roblox game, move it into `ReplicatedStorage`.
+
+I recommend naming the folder `Python`, but you can use any name you want.
+
+Once imported, create a `LocalScript` or `Script` and require the main module:
+
+```lua
+local main = require(game.ReplicatedStorage.Python.main)
+```
+
+Then provide your Python-like code as a string and run it using `main.run()`:
+
+```lua
+local main = require(game.ReplicatedStorage.Python.main)
+
+local code = [[
+print("Hello from Python!")
+]]
+
+local ok, err = pcall(function()
+    main.run(code)
+end)
+
+if ok then
+    -- Code ran successfully.
+else
+    -- Code failed to run.
+    warn("Executing Python code failed: " .. err)
+end
+```
+
+`main.run()` executes the provided Python-like source code inside the interpreter.
+
+Using `pcall()` is recommended if you want to safely handle errors produced while executing the interpreted code.
+
+## Changelog
+
+### 0.1.1
+
+* Added interpreter tests.
+* Added example/demo scripts.
+
+### 0.1.0
+
+* Initial public release.
+* Added the core Python-like lexer and parser.
+* Added variables, expressions, and basic types.
+* Added functions and classes.
+* Added `if` / `elif` / `else`.
+* Added `while` and `for` loops.
+* Added `break` and `continue`.
+* Added `try` / `except` / `else` / `finally`.
+* Added exception propagation and inheritance.
+* Added lists and dictionaries.
+* Added built-in functions.
+* Added `random`, `math`, and `time` libraries.
+* Added the `roblox` library.
+* Added support for custom libraries.
+* Added initial Roblox integration.
+
 ## Features
 
 * Python-like syntax
@@ -38,6 +100,7 @@ For example:
 import roblox
 
 part = roblox.getdir("workspace.Part")
+
 part.Name = "Test1"
 part.Color = (0, 255, 0)
 part.Position = (0, 10, 0)
@@ -47,6 +110,8 @@ part.Anchored = true
 This allows Python-like scripts to interact with Roblox instances without requiring the equivalent functionality to be written directly in Luau.
 
 The Roblox library is an important part of the project and will continue to expand as more functionality is implemented.
+
+> **Note:** The example above requires a `Part` named `Part` to exist inside `Workspace`.
 
 ## Libraries
 
@@ -75,9 +140,11 @@ Your library must contain a function named `Import` with two parameters:
 
 ```lua
 local module = {}
+
 function module.Import(env, special)
     -- Library registration
 end
+
 return module
 ```
 
@@ -233,9 +300,9 @@ def calculate(energy):
 
 try:
     result = calculate(50)
-    print(result)
+    print(str(result))
 except ValueError as error:
-    print(error)
+    print(str(error))
 ```
 
 ## Project Structure
@@ -251,19 +318,16 @@ src/
 ├── Exceptions
 └── Libraries
 
+Demo Scripts/
+└── ...
+
 tests/
 └── ...
 ```
 
 The main components are responsible for different stages of the interpreter, including parsing source code, executing it, managing runtime behavior, handling exceptions, and providing libraries.
 
-## Running
-
-This project is designed to run within a Roblox/Luau environment.
-
-Place the interpreter scripts into your Roblox project and provide Python-like source code to the interpreter.
-
-> Setup instructions will be expanded as the project develops.
+The `Demo Scripts` folder contains example Python-like programs demonstrating different features of the interpreter.
 
 ## Compatibility
 
@@ -311,7 +375,7 @@ If you want to contribute a new Python feature, please try to match the behavior
 
 This project is licensed under the **MIT License**.
 
-See [`LICENSE`](LICENSE) for the full license text.
+See `LICENSE` for the full license text.
 
 ---
 

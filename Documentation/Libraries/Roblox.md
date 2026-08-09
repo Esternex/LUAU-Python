@@ -390,7 +390,7 @@ import roblox
 
 part = roblox.getdir("workspace.Part")
 
-part.Destroy()
+part:Destroy()
 ```
 
 This is equivalent to calling:
@@ -406,7 +406,7 @@ in Luau.
 Methods are called using normal Python-like function-call syntax:
 
 ```python
-part.Destroy()
+part:Destroy()
 ```
 
 rather than Luau's `:` syntax:
@@ -424,7 +424,7 @@ import roblox
 
 part = roblox.getdir("workspace.Part")
 
-part.Destroy()
+part:Destroy()
 ```
 
 > **Requirement:** This script requires a `Part` named `Part` to be placed in `Workspace`.
@@ -438,7 +438,7 @@ import roblox
 
 part = roblox.getdir("workspace.Part")
 
-clone = part.Clone()
+clone = part:Clone()
 clone.Name = "PartClone"
 clone.Parent = workspace
 ```
@@ -452,7 +452,7 @@ import roblox
 
 remote = roblox.getdir("game.ReplicatedStorage.RemoteEvent")
 
-remote.FireServer("Hello from Python!")
+remote:FireServer("Hello from Python!")
 ```
 
 > **Note:** `FireServer()` can only be called from a client in the same situations where Roblox normally permits `RemoteEvent:FireServer()` to be called.
@@ -474,7 +474,7 @@ part.Name = "Example"
 part.Position = (0, 10, 0)
 part.Anchored = true
 
-part.Destroy()
+part:Destroy()
 ```
 
 The goal is for Python-like scripts to be able to interact with Roblox in much the same way that normal Luau code can.

@@ -127,7 +127,7 @@ The interpreter supports custom libraries written in Luau.
 
 Custom libraries can expose functionality to Python-like code while still having access to the full Roblox/Luau environment.
 
-For detailed information about creating custom libraries, see [`Documentation/Custom-Libraries.md`](Documentation/Custom-Libraries.md).
+For detailed information about creating custom libraries, see [`Documentation/Custom-Libraries.md`](Documentation/Custom%20Libraries.md).
 
 > **Security note:** Custom libraries execute as Luau code and therefore have access to Roblox functionality outside the interpreted Python-like sandbox. Only install or use libraries that you trust.
 

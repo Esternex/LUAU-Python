@@ -10,4 +10,4 @@ print(is_ready)
 
 energy = energy - 25
 
-print("Energy:", energy)
+print("Energy:", str(energy)) # because python doesn't allow printing numbers for some reason so i don't too

@@ -45,6 +45,11 @@ Using `pcall()` is recommended if you want to safely handle errors produced whil
 
 ## Changelog
 
+### 0.1.2
+
+* Added tuples for modifying color, size and position of parts instead of Vector3 and such.
+* Added roblox.createinstance()
+
 ### 0.1.1
 
 * Added interpreter tests.

@@ -1,4 +1,4 @@
-﻿  21:53:30.991  SOURCE|local module = {}
+﻿  20:29:15.217  SOURCE|local module = {}
 local Values = require(script.Parent.Parent.Parent.Runtime.Values)
 local RobloxBridge = require(script.Parent.Parent.Parent.Runtime.RobloxBridge)
 
@@ -13,15 +13,15 @@ function module.import(env, special)
 	env:DeclareVar("workspace", Values.mkRoblox(workspace), true)
 
 	main.registerLibrary(env, special, {
-		getdir = function(args)
+		getdir = function(args, env)
 			if not args[1] then
 				error("roblox.getdir() expects a path string or instance")
 			end
-			return RobloxBridge.ResolvePath(args[1])
+			return RobloxBridge.ResolvePath(args[1], false, env)
 		end,
 
-		find = function(args)
-			return RobloxBridge.ResolvePath(args[1])
+		find = function(args, env)
+			return RobloxBridge.ResolvePath(args[1], true, env)
 		end,
 		
 		createinstance = function(args)
@@ -43,4 +43,4 @@ end
 
 return module
   -  Edit
-  21:53:30.991
+  20:29:15.218

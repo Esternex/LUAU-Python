@@ -1,4 +1,4 @@
-﻿  21:53:30.989  SOURCE|local module = {}
+﻿  20:29:15.215  SOURCE|local module = {}
 
 function module.import(env, special)
 	if not special then
@@ -196,7 +196,7 @@ function module.import(env, special)
 			if value[2] ~= "table" then
 				error(
 					"In  -  Edit
-  21:53:30.989  SOURCE|valid argument to time.asctime: expected tuple"
+  20:29:15.215  SOURCE|valid argument to time.asctime: expected tuple"
 				)
 			end
 
@@ -330,4 +330,4 @@ function module.import(env, special)
 end
 
 return module  -  Edit
-  21:53:30.989
+  20:29:15.215

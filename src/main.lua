@@ -1,4 +1,4 @@
-﻿  21:53:30.987  SOURCE|local module = {}
+﻿  20:29:15.212  SOURCE|local module = {}
 
 function module.run(input)
 	local Parser = require(script.Parent.parser)
@@ -137,7 +137,7 @@ function module.registerCoreFunctions(env)
 					if not max or item[1] > max[1] then
 						max = item
 		  -  Edit
-  21:53:30.987  SOURCE|			end
+  20:29:15.212  SOURCE|			end
 				else
 					error("max() expects a list of numbers. Found "..item[2].." in list.")
 				end
@@ -273,7 +273,7 @@ function module.registerCoreFunctions(env)
 	module.registerTypeMethod("string", "join", function(self, args)
 		local list = args[1]
 		if not list or list[2] ~= "  -  Edit
-  21:53:30.988  SOURCE|table" then
+  20:29:15.213  SOURCE|table" then
 			error("join() expects a list")
 		end
 		local parts = {}
@@ -340,4 +340,4 @@ end
 
 return module
   -  Edit
-  21:53:30.988
+  20:29:15.213

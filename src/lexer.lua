@@ -1,4 +1,4 @@
-﻿  21:53:30.986  SOURCE|local module = {}
+﻿  20:29:15.209  SOURCE|local module = {}
 local Dependencies = script.Parent.Dependencies
 local Types = require(Dependencies.Types)
 
@@ -177,7 +177,7 @@ function module.Tokenize(sourceCode: string)
 			elseif char == "." then
 				if i < lineLen and line:sub(i + 1, i + 1) == "." then
 					table.insert  -  Edit
-  21:53:30.986  SOURCE|(tokens, {"..", "Concat"})
+  20:29:15.209  SOURCE|(tokens, {"..", "Concat"})
 					i = i + 2
 				else
 					table.insert(tokens, {char, "Dot"})
@@ -311,7 +311,7 @@ function module.Tokenize(sourceCode: string)
 						end
 						i = i + 1
 						local exprSrc = ""  -  Edit
-  21:53:30.986  SOURCE|
+  20:29:15.209  SOURCE|
 						local depth = 1
 						while i <= lineLen and depth > 0 do
 							local c = line:sub(i, i)
@@ -413,4 +413,4 @@ end
 
 return module
   -  Edit
-  21:53:30.986
+  20:29:15.210

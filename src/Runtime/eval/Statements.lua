@@ -1,4 +1,4 @@
-﻿  21:53:30.992  SOURCE|local module = {}
+﻿  20:29:15.221  SOURCE|local module = {}
 local Values = require(script.Parent.Parent.Values)
 
 local function eval_program(program, env)
@@ -128,7 +128,7 @@ local function eval_for_statement(forStmt, env)
 			for k, _ in pairs(iterable[1]) do
 				local keyVal = if type(k) == "number" then Values.mkNumber(k) else Values.mkString(tostring(k))
 				local r =   -  Edit
-  21:53:30.992  SOURCE|processItem(keyVal)
+  20:29:15.221  SOURCE|processItem(keyVal)
 				if r then
 					return r
 				end
@@ -279,7 +279,7 @@ local function eval_try_statement(tryStmt, env)
 					env.currentException = err.value
 
 					local hOk, hResult = pcall(runBlock, handler.bod  -  Edit
-  21:53:30.992  SOURCE|y or {})
+  20:29:15.221  SOURCE|y or {})
 					if not hOk then
 						pendingError = hResult
 					elseif hResult then
@@ -345,4 +345,4 @@ return {
 	eval_try_statement = eval_try_statement,
 }
   -  Edit
-  21:53:30.992
+  20:29:15.221

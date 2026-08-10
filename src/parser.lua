@@ -1,4 +1,4 @@
-﻿  21:53:30.987  SOURCE|local module = {}
+﻿  20:29:15.210  SOURCE|local module = {}
 local Dependencies = script.Parent.Dependencies
 local Types = require(Dependencies.Types)
 local AST = require(Dependencies.AST)
@@ -151,7 +151,7 @@ function module:parse_function_declaration()
 end
 
 functi  -  Edit
-  21:53:30.987  SOURCE|on module:parse_global_statement()
+  20:29:15.211  SOURCE|on module:parse_global_statement()
 	self:eat()
 	local names = { self:expect("Identifier", "Expected a variable name after 'global'")[1] }
 	while self:at()[1] == "," do
@@ -276,7 +276,7 @@ function module:parse_if_statement()
 			self:expect("Colon", "Expected ':' after else")
 			self:expect("Newline", "Expected newline after else")
 			self:expect("Indent", "Expected indented else   -  Edit
-  21:53:30.987  SOURCE|body")
+  20:29:15.211  SOURCE|body")
 			local elseBody = {}
 			while self:at() and self:at()[2] ~= "Dedent" and self:at()[2] ~= "EOF" do
 				local stmt = self:parse_stmt()
@@ -408,7 +408,7 @@ function module:parse_try_statement()
 		end
 		local handlerBody = self:parse_indented_block("'except' clause")
 		table.insert(handlers, { ex  -  Edit
-  21:53:30.987  SOURCE|cType = excType, name = name, body = handlerBody })
+  20:29:15.211  SOURCE|cType = excType, name = name, body = handlerBody })
 	end
 
 	local elseBody
@@ -544,7 +544,7 @@ function module:parse_primary_expr()
 		if operator == "not" then
 			operator = "!"
 		en  -  Edit
-  21:53:30.987  SOURCE|d
+  20:29:15.211  SOURCE|d
 		local operand = self:parse_primary_expr()
 		return {
 			kind = "UnaryExpr",
@@ -693,7 +693,7 @@ end
 function module:parse_expr()
 	return self:parse_assignment_expr()
 end  -  Edit
-  21:53:30.987  SOURCE|
+  20:29:15.211  SOURCE|
 
 function module:ProduceAST(sourceCode)
 	self.tokens = tokenize(sourceCode)
@@ -722,4 +722,4 @@ end
 
 return module
   -  Edit
-  21:53:30.987
+  20:29:15.211

@@ -1,4 +1,4 @@
-﻿  21:53:30.991  SOURCE|local module = {}
+﻿  20:29:15.219  SOURCE|local module = {}
 local Values = require(script.Parent.Values)
 local Environment = require(script.Parent.Environment)
 
@@ -115,6 +115,20 @@ function BRIDGE_METHODS.GetChildrenWithClass(raw, className)
 	return out
 end
 
+local function findChildOrInstanceProperty(raw, name)
+	local child = raw:FindFirstChild(name)
+	if child then
+		return child
+	end
+	local ok, v = pcall(function()
+		return raw[name]
+	end)
+	if ok and typeof(v) == "Instance" then
+		return v
+	end
+	return nil
+end
+
 function module.unbox(v, env)
 	if type(v) ~= "table" then
 		return v
@@ -164,7 +178,8 @@ function module.getMember(rbxVal, property)
 		if ok then
 			return Box(v)
 		end
-		error("Roblox instance '" .. raw:GetFullName() .. "' has no child or property '" .. property .. "'")
+		error("Ro  -  Edit
+  20:29:15.219  SOURCE|blox instance '" .. raw:GetFullName() .. "' has no child or property '" .. property .. "'")
 	end
 	local ok, v = pcall(function()
 		return raw[property]
@@ -172,8 +187,7 @@ function module.getMember(rbxVal, property)
 	if not ok then
 		error("Cannot read member '" .. property .. "' on Roblox value " .. typeof(raw))
 	end
-	re  -  Edit
-  21:53:30.992  SOURCE|turn Box(v)
+	return Box(v)
 end
 
 function module.SetMember(rbxVal, property, langVal, env)
@@ -183,8 +197,6 @@ function module.SetMember(rbxVal, property, langVal, env)
 	end
 	property = tostring(property)
 	local rawVal = module.unbox(langVal, env)
-	-- Tuples are positional component lists: convert them to the datatype the
-	-- property currently holds (Vector3, Color3, UDim2, CFrame, etc.).
 	if langVal and langVal[2] == "tuple" and type(rawVal) == "table" then
 		local currentOk, current = pcall(function()
 			return raw[property]
@@ -264,7 +276,7 @@ function module.InvokeMethod(rbxVal, method, args, env)
 	return Box(result)
 end
 
-function module.ResolvePath(path)
+function module.ResolvePath(path, includeProperties, env)
 	if type(path) == "table" then
 		if path[2] == "roblox" then
 			return path
@@ -279,22 +291,39 @@ function module.ResolvePath(path)
 		return Values.mkRoblox(game)
 	end
 	local current = game
+	local atStart = true
 	for seg in path:gmatch("[^%.]+") do
 		local segLower = seg:lower()
 		if segLower == "game" or segLower == "datamodel" then
 			continue
 		end
+		if atStart then
+			atStart = false
+			if env then
+				local okVar, var = pcall(function()
+					return env:LookupVar(seg)
+				end)
+				if okVar and type(var) == "table" and var[2] == "roblox" then
+					current = var[1]
+					continue
+				end
+			end
+		end
 		local child = current:FindFirstChild(seg)
 		if not child then
 			for _, c in ipairs(current:GetChildren()) do
 				if c.Name:lower() == segLower then
-					child = c
+					child = c  -  Edit
+  20:29:15.219  SOURCE|
 					break
 				end
 			end
 		end
+		if not child and includeProperties then
+			child = findChildOrInstanceProperty(current, seg)
+		end
 		if not child then
-			error("getdir: Cannot resolve '" .. seg .. "' in " .. current:GetFullName())
+			error("Cannot resolve '" .. seg .. "' in " .. current:GetFullName())
 		end
 		current = child
 	end
@@ -302,4 +331,4 @@ function module.ResolvePath(path)
 end
 
 return module  -  Edit
-  21:53:30.992
+  20:29:15.219

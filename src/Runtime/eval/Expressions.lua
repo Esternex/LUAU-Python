@@ -1,4 +1,4 @@
-﻿  21:53:30.992  SOURCE|local module = {}
+﻿  20:29:15.220  SOURCE|local module = {}
 local Values = require(script.Parent.Parent.Values)
 local Environment = require(script.Parent.Parent.Environment)
 local RobloxBridge = require(script.Parent.Parent.RobloxBridge)
@@ -127,7 +127,7 @@ local function evaluate_binary_expr(binop, env)
 			return eval_number_binary_expr(leftHandSide, rightHandSide, "+")
 		elseif lhsType == "string" and rhsType == "string" then
 			return eval_string_concat_expr(l  -  Edit
-  21:53:30.992  SOURCE|eftHandSide, rightHandSide)
+  20:29:15.220  SOURCE|eftHandSide, rightHandSide)
 		end
 		raiseTypeError()
 	end
@@ -259,7 +259,7 @@ end
 
 local function eval_index_expr(node, env)
 	local parent = require(script.Parent.Par  -  Edit
-  21:53:30.992  SOURCE|ent.Interpreter)
+  20:29:15.220  SOURCE|ent.Interpreter)
 	local receiver = parent.evaluate(node.object, env)
 	local index = parent.evaluate(node.index, env)
 	if receiver[2] == "roblox" then
@@ -378,7 +378,7 @@ local function eval_call_expr(node, env)
 				kwArgs[argNode.name] = parent.evaluate(argNode.value, env)
 			else
 				table.insert(posArgs, parent.evaluate(argNo  -  Edit
-  21:53:30.992  SOURCE|de, env))
+  20:29:15.221  SOURCE|de, env))
 			end
 		end
 		return posArgs, kwArgs
@@ -434,7 +434,7 @@ local function eval_call_expr(node, env)
 		if next(kwArgs) ~= nil then
 			error("Keyword arguments are not supported for native functions")
 		end
-		return calleeVal.caller(args)
+		return calleeVal.caller(args, env)
 	end
 
 	return invoke_user_function(calleeVal, args, env, kwArgs)
@@ -458,4 +458,4 @@ return {
 	eval_dict_literal = eval_dict_literal,
 }
   -  Edit
-  21:53:30.992
+  20:29:15.221

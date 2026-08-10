@@ -1,4 +1,4 @@
-﻿  21:53:30.991  SOURCE|local module = {}
+﻿  20:29:15.219  SOURCE|local module = {}
 local Values = require(script.Parent.Values)
 
 local function rawValue(v)
@@ -170,7 +170,7 @@ local DictMethods = {
 		end
 		local value = args[2] or Values.mkNull()
 		self[1][key] = val  -  Edit
-  21:53:30.991  SOURCE|ue
+  20:29:15.219  SOURCE|ue
 		return value
 	end,
 	update = function(self, args)
@@ -201,13 +201,13 @@ local DictMethods = {
 
 local TypeMethods = {}
 
-local function tryCallMember(container, property, args)
+local function tryCallMember(container, property, args, env)
 	if type(container) ~= "table" then
 		return nil, false
 	end
 	local member = container[property]
 	if type(member) == "table" and member[2] == "native_function" then
-		return member.caller(args), true
+		return member.caller(args, env), true
 	end
 	return nil, false
 end
@@ -239,7 +239,7 @@ function module.dispatch(receiver, property, args, env)
 			return m(receiver, args)
 		end
 	end
-	local res, ok = tryCallMember(receiver[1], property, args)
+	local res, ok = tryCallMember(receiver[1], property, args, env)
 	if ok then
 		return res
 	end
@@ -247,4 +247,4 @@ function module.dispatch(receiver, property, args, env)
 end
 
 return module  -  Edit
-  21:53:30.991
+  20:29:15.219

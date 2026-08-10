@@ -1,4 +1,4 @@
-﻿  21:53:30.991  SOURCE|local module = {}
+﻿  20:29:15.218  SOURCE|local module = {}
 local Values = require(script.Parent.Values)
 local Environment = require(script.Parent.Environment)
 
@@ -95,7 +95,7 @@ function module.runBytecode(bytecode, env)
 	local i = 1
 	while i <= #instructions do
 		local instr = instruc  -  Edit
-  21:53:30.991  SOURCE|tions[i]
+  20:29:15.218  SOURCE|tions[i]
 		local op = instr.opcode
 		local operand = instr.operand
 		
@@ -212,7 +212,7 @@ function module.runBytecode(bytecode, env)
 				stack[#stack] = nil
 			end
 			stack[#stack + 1]   -  Edit
-  21:53:30.991  SOURCE|= Values.mkTable(items)
+  20:29:15.218  SOURCE|= Values.mkTable(items)
 		elseif op == OP.LOAD_DICT then
 			local count = operand
 			local dict = {}
@@ -250,4 +250,4 @@ end
 
 return module
   -  Edit
-  21:53:30.991
+  20:29:15.218

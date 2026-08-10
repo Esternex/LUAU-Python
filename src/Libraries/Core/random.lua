@@ -1,4 +1,4 @@
-﻿  21:53:30.990  SOURCE|local module = {}
+﻿  20:29:15.217  SOURCE|local module = {}
 
 local values = require(script.Parent.Parent.Parent.Runtime.Values)
 
@@ -226,7 +226,7 @@ function module.import(env, special)
 			local u2 = math.random()
 
 			local z =  -  Edit
-  21:53:30.990  SOURCE| math.sqrt(
+  20:29:15.217  SOURCE| math.sqrt(
 				-2 * math.log(u1)
 			)
 				*
@@ -262,4 +262,4 @@ function module.import(env, special)
 end
 
 return module  -  Edit
-  21:53:30.990
+  20:29:15.217

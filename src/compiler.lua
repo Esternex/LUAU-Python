@@ -1,4 +1,4 @@
-﻿  21:53:30.985  SOURCE|local module = {}
+﻿  20:29:15.208  SOURCE|local module = {}
 
 local OP = {
 	LOAD_CONST = "LOAD_CONST",
@@ -142,7 +142,7 @@ end
 function module.compileDictLiteral(self, ast, env)
 	local count = #ast.entries
 	for _, entry in ipairs  -  Edit
-  21:53:30.986  SOURCE|(ast.entries) do
+  20:29:15.208  SOURCE|(ast.entries) do
 		module.compile(self, entry[1], env)
 		module.compile(self, entry[2], env)
 	end
@@ -243,4 +243,4 @@ return {
 	OP = OP,
 }
   -  Edit
-  21:53:30.986
+  20:29:15.208

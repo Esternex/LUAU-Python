@@ -1,4 +1,4 @@
-﻿  21:53:30.989  SOURCE|local module = {}
+﻿  20:29:15.216  SOURCE|local module = {}
 
 local values = require(script.Parent.Parent.Parent.Runtime.Values)
 
@@ -217,7 +217,7 @@ function module.import(env, special)
 			end
 
 			ret  -  Edit
-  21:53:30.990  SOURCE|urn num(math.abs(a))
+  20:29:15.216  SOURCE|urn num(math.abs(a))
 		end,
 
 		lcm = function(args)
@@ -247,4 +247,4 @@ function module.import(env, special)
 end
 
 return module  -  Edit
-  21:53:30.990
+  20:29:15.216

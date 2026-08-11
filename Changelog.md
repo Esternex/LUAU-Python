@@ -1,5 +1,17 @@
 # Changelog
 
+## version 0.2.0
+* Added new roblox methods
+* roblox.Vector3() - Creates a Vector3 object
+* roblox.CFrame() - Creates a CFrame object with near-exact syntax to roblox
+* roblox.require() - Requires any module and lets you use functions
+
+* Changed some naming to use python naming conventions
+* roblox.getdir -> roblox.get_dir
+* roblox.createinstance -> roblox.create_instance
+
+- Note: You can still use tuples for setting Size, Position and CFrame
+
 ## version 0.1.3
 * Modified the roblox library
 * Added support for creating UI elements

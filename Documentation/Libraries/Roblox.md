@@ -1,10 +1,27 @@
 # Roblox Library
 
-The `roblox` library provides functionality for interacting directly with Roblox instances from Python-like code.
+The `roblox` library provides functionality for interacting directly with Roblox from Python-like code.
 
-It allows interpreted scripts to access existing Roblox objects, search for instances, create new instances, and interact with Roblox properties and methods.
+It allows interpreted scripts to:
 
-## Importing
+* Access existing Roblox instances
+* Find instances using paths
+* Create new instances
+* Read and modify Roblox properties
+* Call Roblox methods
+* Use Roblox events and APIs
+* Require `ModuleScript`s
+* Create `Vector3` values
+* Create `CFrame` values
+* Interact with Roblox functionality directly from interpreted code
+
+The library is designed to make Roblox APIs accessible while still using Python-like syntax.
+
+> **Note:** The Roblox library is still under active development. Some Roblox functionality may not yet behave exactly like native Luau.
+
+---
+
+# Importing
 
 Import the library using:
 
@@ -12,23 +29,23 @@ Import the library using:
 import roblox
 ```
 
-By default, the library is available under the name `roblox`.
-
-If your interpreter supports importing it under a different alias, the alias can be used instead:
+You can also import it under an alias:
 
 ```python
 import roblox as rb
 
-part = rb.getdir("workspace.Part")
+part = rb.get_dir("workspace.Part")
 ```
+
+The default library name is `roblox`.
 
 ---
 
-## Built-in Roblox Variables
+# Built-in Roblox Variables
 
 The Roblox library automatically exposes two Roblox objects to the Python-like environment.
 
-### `game`
+## `game`
 
 `game` refers to the current Roblox `DataModel`.
 
@@ -36,88 +53,136 @@ The Roblox library automatically exposes two Roblox objects to the Python-like e
 print(game)
 ```
 
-This can also be used when accessing Roblox objects.
+The `game` variable is automatically available and does not need to be imported.
 
-For example:
-
-```python
-part = game.Workspace.Part
-```
-
-### `workspace`
+## `workspace`
 
 `workspace` refers to the current Roblox `Workspace`.
 
 ```python
-part = workspace.Part
+print(workspace)
 ```
 
-This is equivalent to accessing the Workspace through `game`:
+It is also automatically available.
+
+You can use it with Roblox operations, for example:
 
 ```python
-part = game.Workspace.Part
+workspace.Name
 ```
 
-Both `game` and `workspace` are automatically available and do not need to be imported separately.
+---
+
+# Accessing Roblox Instances
+
+Roblox instances returned by the library can be interacted with directly.
+
+For example:
+
+```python
+import roblox
+
+part = roblox.get_dir("workspace.Part")
+
+part.Name = "PythonPart"
+part.Anchored = true
+part.Position = (0, 10, 0)
+```
+
+Roblox instances are not limited to property access.
+
+You can also call their Roblox methods.
+
+For example:
+
+```python
+part:Destroy()
+```
+
+or:
+
+```python
+remote:FireServer("Hello")
+```
+
+This means the library can interact with Roblox functionality in much greater depth than simply changing properties.
+
+In general, if the underlying Roblox instance supports a property or method, the goal of the library is to make it accessible from Python-like code.
+
+> **Note:** The exact syntax and supported functionality depend on the current interpreter implementation.
 
 ---
 
 # Functions
 
-## `roblox.getdir()`
+## `roblox.get_dir()`
 
-Resolves a Roblox object from a path.
+Resolves a Roblox instance from a path.
 
 ### Syntax
 
 ```python
-roblox.getdir(path)
+roblox.get_dir(path)
 ```
 
 ### Parameters
 
-| Parameter | Type                        | Description                  |
-| --------- | --------------------------- | ---------------------------- |
-| `path`    | `string` or Roblox instance | The Roblox object to resolve |
+| Parameter | Type                      | Description           |
+| --------- | ------------------------- | --------------------- |
+| `path`    | string or Roblox instance | The object to resolve |
 
-### Examples
+### String Paths
 
-Using a string path:
+The most common usage is passing a Roblox path as a string:
 
 ```python
 import roblox
 
-part = roblox.getdir("workspace.Part")
-
-part.Name = "TestPart"
+part = roblox.get_dir("workspace.Part")
 ```
 
-You can then interact with the returned Roblox instance:
+Nested paths are supported:
 
 ```python
-part.Position = (0, 10, 0)
-part.Anchored = true
+part = roblox.get_dir("workspace.Map.Spawn.Part")
 ```
+
+For example, this hierarchy:
+
+```text
+Workspace
+└── Map
+    └── Spawn
+        └── Part
+```
+
+can be accessed with:
+
+```python
+part = roblox.get_dir("workspace.Map.Spawn.Part")
+```
+
+### Instance Arguments
+
+`get_dir()` can also work with Roblox instances depending on the current path resolver implementation.
 
 ### Errors
 
-Calling `getdir()` without an argument raises an error:
+Calling the function without an argument produces an error:
 
 ```python
-roblox.getdir()
+roblox.get_dir()
 ```
 
-The resulting error is:
-
 ```text
-roblox.getdir() expects a path string or instance
+roblox.get_dir() expects a path string or instance
 ```
 
 ---
 
-## `roblox.find()`
+# `roblox.find()`
 
-Resolves a Roblox object from a path.
+`find()` resolves a Roblox instance using the Roblox path resolver.
 
 ### Syntax
 
@@ -127,9 +192,9 @@ roblox.find(path)
 
 ### Parameters
 
-| Parameter | Type                        | Description                  |
-| --------- | --------------------------- | ---------------------------- |
-| `path`    | `string` or Roblox instance | The Roblox object to resolve |
+| Parameter | Type                      | Description        |
+| --------- | ------------------------- | ------------------ |
+| `path`    | string or Roblox instance | The object to find |
 
 ### Example
 
@@ -141,95 +206,94 @@ part = roblox.find("workspace.Part")
 part.Name = "FoundPart"
 ```
 
-`find()` currently uses the same path resolution system as `getdir()`.
-
-For example:
+Nested paths can also be used:
 
 ```python
-part = roblox.find("workspace.Folder.Part")
+part = roblox.find("workspace.Map.Spawn.Part")
 ```
 
-will resolve the object at:
+### `find()` vs `get_dir()`
 
-```text
-Workspace
-└── Folder
-    └── Part
+The two functions use the same underlying Roblox path resolver, but `find()` is intended for lookup behavior.
+
+```python
+part = roblox.find("workspace.Part")
 ```
 
 ---
 
-## `roblox.createinstance()`
+# `roblox.create_instance()`
 
 Creates a new Roblox `Instance`.
 
 ### Syntax
 
 ```python
-roblox.createinstance(class)
+roblox.create_instance(class)
 ```
 
 or:
 
 ```python
-roblox.createinstance(class, parent)
+roblox.create_instance(class, parent)
 ```
 
 ### Parameters
 
-| Parameter | Type            | Description                    |
-| --------- | --------------- | ------------------------------ |
-| `class`   | `string`        | The Roblox class to create     |
-| `parent`  | Roblox instance | The parent of the new instance |
+| Parameter | Type            | Description                |
+| --------- | --------------- | -------------------------- |
+| `class`   | string          | The Roblox class to create |
+| `parent`  | Roblox instance | Optional parent            |
 
-The `parent` parameter is optional.
-
-If no parent is provided, the instance is parented to `workspace`.
+If `parent` is not provided, the new instance is parented to `workspace`.
 
 ### Example
-
-Create a Part inside Workspace:
 
 ```python
 import roblox
 
-part = roblox.createinstance("Part")
+part = roblox.create_instance("Part")
 
-part.Name = "TestPart"
+part.Name = "PythonPart"
 part.Position = (0, 10, 0)
 part.Anchored = true
 ```
 
-Because no parent was provided, the resulting Part is parented to `workspace`.
+This creates:
+
+```text
+Workspace
+└── PythonPart
+```
 
 ### Specifying a Parent
 
 A parent can be provided as the second argument:
 
 ```python
-folder = roblox.getdir("workspace.MyFolder")
+folder = roblox.get_dir("workspace.MyFolder")
 
-part = roblox.createinstance("Part", folder)
+part = roblox.create_instance("Part", folder)
 
-part.Name = "MyPart"
+part.Name = "PythonPart"
 ```
 
-The resulting hierarchy will be:
+The resulting hierarchy is:
 
 ```text
 Workspace
 └── MyFolder
-    └── MyPart
+    └── PythonPart
 ```
 
 ### Return Value
 
-`createinstance()` returns the newly created Roblox instance.
+The newly created instance is returned as a Roblox value.
 
-This means you can immediately modify it:
+This allows you to immediately interact with it:
 
 ```python
-part = roblox.createinstance("Part")
+part = roblox.create_instance("Part")
 
 part.Name = "Test"
 part.Size = (5, 5, 5)
@@ -237,86 +301,310 @@ part.Position = (0, 10, 0)
 part.Anchored = true
 ```
 
-### Errors
+---
 
-Calling `createinstance()` without a class raises an error.
+# `roblox.require()`
+
+The `require()` function allows Python-like code to require a Roblox `ModuleScript`.
+
+### Syntax
 
 ```python
-roblox.createinstance()
+roblox.require(module)
 ```
 
-The resulting error is:
+The module can be provided as a Roblox instance or as a path.
+
+### Using a Path
+
+```python
+import roblox
+
+my_module = roblox.require("workspace.MyModule")
+```
+
+### Using an Instance
+
+```python
+import roblox
+
+module = roblox.get_dir("workspace.MyModule")
+my_module = roblox.require(module)
+```
+
+The target must be a `ModuleScript`.
+
+The required ModuleScript must return a table.
+
+For example, a Roblox ModuleScript could contain:
+
+```lua
+return {
+    Add = function(a, b)
+        return a + b
+    end,
+
+    Message = function()
+        return "Hello from Roblox!"
+    end,
+}
+```
+
+Python-like code can then access the returned functions:
+
+```python
+import roblox
+
+module = roblox.require("workspace.MyModule")
+
+result = module["Add"](10, 20)
+print(str(result))
+```
+
+Functions returned by the ModuleScript are converted into callable native functions that can be used by the interpreter.
+
+Arguments passed to those functions are converted from interpreter values into their corresponding Roblox/Luau values.
+
+Return values are converted back into interpreter values.
+
+### Errors
+
+`roblox.require()` requires a ModuleScript.
+
+If the target is not a ModuleScript, an error is produced.
+
+The ModuleScript must also return a table.
+
+---
+
+# `roblox.Vector3()`
+
+Creates a Roblox `Vector3`.
+
+### Syntax
+
+```python
+roblox.Vector3(x, y, z)
+```
+
+### Parameters
+
+| Parameter | Type   | Description  |
+| --------- | ------ | ------------ |
+| `x`       | number | X coordinate |
+| `y`       | number | Y coordinate |
+| `z`       | number | Z coordinate |
+
+### Example
+
+```python
+import roblox
+
+position = roblox.Vector3(0, 10, 0)
+```
+
+The resulting value can be assigned to Roblox properties:
+
+```python
+part.Position = roblox.Vector3(0, 10, 0)
+```
+
+### Passing a Tuple
+
+The constructor also supports tuple-style arguments:
+
+```python
+part.Position = roblox.Vector3((0, 10, 0))
+```
+
+### Passing an Existing Vector3
+
+A Roblox `Vector3` can also be passed directly:
+
+```python
+vector = roblox.Vector3(0, 10, 0)
+
+other = roblox.Vector3(vector)
+```
+
+---
+
+# `roblox.CFrame()`
+
+Creates a Roblox `CFrame`.
+
+The constructor supports several forms.
+
+## Empty CFrame
+
+```python
+cf = roblox.CFrame()
+```
+
+This creates:
+
+```lua
+CFrame.new()
+```
+
+## Position
+
+A `Vector3` can be provided:
+
+```python
+position = roblox.Vector3(0, 10, 0)
+cf = roblox.CFrame(position)
+```
+
+This is equivalent to:
+
+```lua
+CFrame.new(Vector3.new(0, 10, 0))
+```
+
+## Position and LookAt
+
+Two `Vector3` values can be provided:
+
+```python
+position = roblox.Vector3(0, 10, 0)
+look_at = roblox.Vector3(0, 0, 0)
+
+cf = roblox.CFrame(position, look_at)
+```
+
+This creates a CFrame using the position and look-at vectors.
+
+## X, Y, Z
+
+Three numbers can be provided:
+
+```python
+cf = roblox.CFrame(0, 10, 0)
+```
+
+This is equivalent to:
+
+```lua
+CFrame.new(0, 10, 0)
+```
+
+## Quaternion Form
+
+The constructor also supports the Roblox quaternion form:
+
+```python
+cf = roblox.CFrame(
+    0, 10, 0,
+    0, 0, 0, 1
+)
+```
+
+The arguments are:
 
 ```text
-createinstance requires a class and parent
+x, y, z, qx, qy, qz, qw
 ```
+
+All seven arguments must be numbers.
 
 ---
 
 # Roblox Properties
 
-Roblox instances returned by the library can be used directly from Python-like code.
+Roblox instances returned by the library can be accessed directly.
 
 For example:
 
 ```python
 import roblox
 
-part = roblox.getdir("workspace.Part")
+part = roblox.get_dir("workspace.Part")
 
-part.Name = "MyPart"
+part.Name = "PythonPart"
 part.Anchored = true
 part.Transparency = 0.5
-part.Position = (0, 10, 0)
-```
-
-The interpreter converts supported Python-like values into the corresponding Roblox values where appropriate.
-
-For example, tuples can be used for properties such as position and size:
-
-```python
 part.Position = (0, 10, 0)
 part.Size = (5, 5, 5)
 ```
 
-RGB tuples can also be used for color:
+The interpreter supports conversion of supported Python-like values into Roblox values.
+
+For example:
+
+```python
+part.Position = (0, 10, 0)
+```
+
+can be used as a Roblox `Vector3`.
+
+Similarly:
 
 ```python
 part.Color = (255, 0, 0)
 ```
 
+can be used as an RGB color.
+
 ---
 
-# Creating Instances
+# Roblox Methods
 
-A complete example using `createinstance()`:
+The Roblox library is not restricted to properties.
+
+Roblox instances can also expose their normal Roblox methods.
+
+For example:
 
 ```python
 import roblox
 
-part = roblox.createinstance("Part")
+part = roblox.get_dir("workspace.Part")
 
-part.Name = "PythonPart"
-part.Position = (0, 10, 0)
-part.Size = (5, 5, 5)
-part.Color = (0, 255, 0)
-part.Anchored = true
+part:Destroy()
 ```
 
-This creates a green, anchored Part above the Workspace origin.
+You can also interact with Roblox services and networking objects where supported.
 
-> **Note:** This example requires Roblox instance creation and property assignment to be supported by the current interpreter version.
+For example:
+
+```python
+remote = roblox.get_dir("ReplicatedStorage.RemoteEvent")
+
+remote:FireServer("Hello from Python!")
+```
+
+Other Roblox APIs can be accessed in the same general way:
+
+```python
+instance:SomeMethod()
+```
+
+The purpose of the library is to provide access to Roblox functionality rather than implementing a separate Python-only version of every Roblox API.
+
+This means the library can be used for things such as:
+
+* Destroying instances
+* Cloning instances
+* Firing RemoteEvents
+* Invoking RemoteFunctions
+* Calling Roblox methods
+* Accessing services
+* Modifying properties
+* Creating instances
+* Working with Roblox objects
+* Interacting with Roblox APIs
+
+> **Note:** Whether a particular method works depends on the current interpreter's Roblox bridge and method/property support.
 
 ---
 
-# Complete Example
-
-The following example demonstrates finding an existing Part and modifying it:
+# Complete Example — Modifying an Existing Part
 
 ```python
 import roblox
 
-part = roblox.getdir("workspace.Part")
+part = roblox.get_dir("workspace.Part")
 
 part.Name = "PythonPart"
 part.Position = (0, 10, 0)
@@ -331,14 +619,12 @@ print("Part modified successfully")
 
 ---
 
-# Creating a Part from Scratch
-
-You can also create a Part without having one already in Workspace:
+# Complete Example — Creating a Part
 
 ```python
 import roblox
 
-part = roblox.createinstance("Part")
+part = roblox.create_instance("Part")
 
 part.Name = "PythonPart"
 part.Position = (0, 10, 0)
@@ -349,7 +635,7 @@ part.Anchored = true
 print("Created " + str(part.Name))
 ```
 
-The resulting hierarchy is:
+This creates:
 
 ```text
 Workspace
@@ -358,156 +644,113 @@ Workspace
 
 ---
 
-# Function Summary
+# Complete Example — Using Vector3
 
-| Function                               | Description                                             |
-| -------------------------------------- | ------------------------------------------------------- |
-| `roblox.getdir(path)`                  | Resolves a Roblox object from a path                    |
-| `roblox.find(path)`                    | Resolves a Roblox object using the Roblox path resolver |
-| `roblox.createinstance(class, parent)` | Creates and returns a new Roblox instance               |
+```python
+import roblox
 
-## Automatically Available Variables
+part = roblox.create_instance("Part")
 
-| Variable    | Description                  |
-| ----------- | ---------------------------- |
-| `game`      | The current Roblox DataModel |
-| `workspace` | The current Roblox Workspace |
+position = roblox.Vector3(0, 10, 0)
+
+part.Position = position
+part.Anchored = true
+```
 
 ---
 
-# Roblox Methods
-
-Roblox objects returned by the `roblox` library are not limited to property access.
-
-You can also interact with Roblox Instances by calling their methods from Python-like code.
-
-This means Roblox functionality such as `Destroy()`, `FireServer()`, `Clone()`, and other Instance methods can be used directly from interpreted code, provided the method is supported by the current interpreter and the Roblox object provides it.
-
-For example:
+# Complete Example — Using CFrame
 
 ```python
 import roblox
 
-part = roblox.getdir("workspace.Part")
+part = roblox.create_instance("Part")
 
-part:Destroy()
+part.CFrame = roblox.CFrame(0, 10, 0)
+part.Anchored = true
 ```
 
-This is equivalent to calling:
+---
 
-```lua
-part:Destroy()
-```
-
-in Luau.
-
-## Calling Methods
-
-Methods are called using normal Python-like function-call syntax:
-
-```python
-part:Destroy()
-```
-
-rather than Luau's `:` syntax:
-
-```lua
-part:Destroy()
-```
-
-The interpreter handles the Roblox method call internally.
-
-### Example: Destroying an Instance
+# Complete Example — Calling a Roblox Method
 
 ```python
 import roblox
 
-part = roblox.getdir("workspace.Part")
+part = roblox.get_dir("workspace.Part")
 
 part:Destroy()
 ```
 
 > **Requirement:** This script requires a `Part` named `Part` to be placed in `Workspace`.
 
-### Example: Cloning an Instance
+---
 
-Roblox methods that return another Instance can also be used:
+# Function Summary
 
-```python
-import roblox
-
-part = roblox.getdir("workspace.Part")
-
-clone = part:Clone()
-clone.Name = "PartClone"
-clone.Parent = workspace
-```
-
-### Example: RemoteEvents
-
-Methods such as `FireServer()` can also be called on supported Roblox objects:
-
-```python
-import roblox
-
-remote = roblox.getdir("game.ReplicatedStorage.RemoteEvent")
-
-remote:FireServer("Hello from Python!")
-```
-
-> **Note:** `FireServer()` can only be called from a client in the same situations where Roblox normally permits `RemoteEvent:FireServer()` to be called.
-
-## Roblox API Access
-
-The Roblox integration is designed to provide access to Roblox Instance functionality rather than creating a separate, limited API for every individual Roblox class.
-
-As a result, Python-like code can interact with Roblox objects using their properties and methods.
-
-For example:
-
-```python
-import roblox
-
-part = roblox.getdir("workspace.Part")
-
-part.Name = "Example"
-part.Position = (0, 10, 0)
-part.Anchored = true
-
-part:Destroy()
-```
-
-The goal is for Python-like scripts to be able to interact with Roblox in much the same way that normal Luau code can.
-
-This includes functionality such as:
-
-* Reading Instance properties
-* Setting Instance properties
-* Calling Instance methods
-* Creating Instances
-* Destroying Instances
-* Cloning Instances
-* Firing RemoteEvents
-* Interacting with Roblox services and objects
-* Passing values between the Python-like runtime and Roblox
-* Using Roblox APIs exposed by the underlying Instance
-
-The exact functionality available depends on the capabilities currently implemented by the interpreter's Roblox bridge.
-
-> **Note:** Roblox APIs that have special restrictions, such as client-only or server-only operations, still follow Roblox's normal execution rules. The interpreter does not bypass Roblox's security or replication model.
+| Function                                | Description                                     |
+| --------------------------------------- | ----------------------------------------------- |
+| `roblox.get_dir(path)`                  | Resolves a Roblox instance from a path          |
+| `roblox.find(path)`                     | Finds a Roblox instance using the path resolver |
+| `roblox.create_instance(class, parent)` | Creates a new Roblox instance                   |
+| `roblox.require(module)`                | Requires a Roblox ModuleScript                  |
+| `roblox.Vector3(...)`                   | Creates a Roblox `Vector3`                      |
+| `roblox.CFrame(...)`                    | Creates a Roblox `CFrame`                       |
 
 ---
 
-## Notes
+# Automatically Available Variables
+
+| Variable    | Description                    |
+| ----------- | ------------------------------ |
+| `game`      | The current Roblox `DataModel` |
+| `workspace` | The current Roblox `Workspace` |
+
+These variables are automatically available and do not require:
+
+```python
+import roblox
+```
+
+---
+
+# Roblox Value Conversion
+
+The Roblox library automatically converts values between the Python-like runtime and Roblox/Luau where supported.
+
+Common examples include:
+
+| Python-like value | Roblox value      |
+| ----------------- | ----------------- |
+| `(0, 10, 0)`      | `Vector3`         |
+| `(255, 0, 0)`     | RGB color         |
+| Roblox instance   | Roblox `Instance` |
+| number            | Luau number       |
+| string            | Luau string       |
+| boolean           | Luau boolean      |
+
+This conversion is handled by the interpreter's Roblox bridge.
+
+---
+
+# Notes
 
 The Roblox library is still under active development.
 
-Additional functionality may be added in future versions, including additional Roblox-specific operations and improved support for interacting with Instances.
+The goal is to make Roblox APIs usable from Python-like code without requiring users to manually write equivalent Luau code.
 
-For the most accurate information, refer to the implementation in:
+As the interpreter develops, additional Roblox functionality and improved compatibility with Roblox APIs will be added.
+
+For the most accurate information about currently supported functionality, refer to:
 
 ```text
 src/Libraries/Roblox
 ```
 
-and check the project's changelog for changes between versions.
+and:
+
+```text
+src/Runtime/RobloxBridge
+```
+
+You should also check the project's changelog for changes between versions.
